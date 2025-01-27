@@ -4,9 +4,9 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'node:18-alpine'
     }
-    /*
+    
     stages {
-        stage('Build') {
+    /*    stage('Build') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
