@@ -21,9 +21,13 @@ pipeline {
         }
         stage('Test') {
             agent {
+                
+            }
+            steps {
                 sh '''
                     echo 'Test stage.'
                     test -f index.html
+                    npm test
                 '''
             }
         }
