@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'node:18-alpine' // Define reusable Docker image
+        DOCKER_IMAGE = 'node:18-alpine'
     }
 
     stages {
@@ -15,10 +15,7 @@ pipeline {
             }
             steps {
                 sh '''
-                    echo "Running Build Stage..."
-                    ls -la
-                    node --version
-                    npm --version
+                    echo "Building project..."
                     npm ci
                     npm run build
                 '''
@@ -27,16 +24,20 @@ pipeline {
         stage('Test') {
             agent {
                 docker {
-                    image "${DOCKER_IMAGE}" // Use the same Docker image for testing
+                    image "${DOCKER_IMAGE}"
                     reuseNode true
                 }
             }
             steps {
                 sh '''
-                    echo "Running Test Stage..."
-                    test -f build/index.html
-                    npm test
+                    echo "Running tests..."
+                    npm test -- --reporter junit --reporter-options outputFile=test-results/junit.xml
                 '''
+            }
+            post {
+                always {
+                    junit 'test-results/junit.xml' // Publish the JUnit report
+                }
             }
         }
     }
