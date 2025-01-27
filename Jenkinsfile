@@ -31,7 +31,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Running tests..."
-                    npm test -- --reporter junit --reporter-options outputFile=test-results/junit.xml
+                    npm test
                 '''
             }
             post {
