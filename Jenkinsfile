@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'node:18-alpine'
     }
-
+    /*
     stages {
         stage('Build') {
             agent {
@@ -21,6 +21,7 @@ pipeline {
                 '''
             }
         }
+        */
         stage('Test') {
             agent {
                 docker {
