@@ -23,6 +23,7 @@ pipeline {
             agent {
                 sh '''
                     echo 'Test stage.'
+                    test -f index.html
                 '''
             }
         }
