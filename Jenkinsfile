@@ -19,5 +19,12 @@ pipeline {
                 '''
             }
         }
+        stage('Test') {
+            agent {
+                sh '''
+                    echo 'Test stage.'
+                '''
+            }
+        }
     }
 }
