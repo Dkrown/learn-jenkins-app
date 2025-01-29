@@ -41,7 +41,7 @@ pipeline {
                 }
             }
         }
-/*
+
         stage('E2E'){
             agent {
                 docker {
@@ -53,11 +53,11 @@ pipeline {
                 echo 'E2E playwright test starting...'
                 sh '''
                     npm install -g serve
-                    serve -s build
+                    node_modules/.bin/serve -s build
                     npx playwright test
                 '''
             }
-        } */
+        } 
     }
 
     post {
