@@ -41,23 +41,24 @@ pipeline {
                 }
             }
         }
-        /*
+        
         stage('E2E'){
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                    reuseNode
+                    reuseNode true
                 }
             }
             steps {
                 echo 'E2E playwright test starting...'
                 sh '''
                     npm install -g serve
-                    node_modules/.bin/serve -s build
+                    node_modules/.bin/serve -s build &
+                    sleep 5
                     npx playwright test
                 '''
             }
-        } */
+        } 
     }
 
     post {
