@@ -54,8 +54,11 @@ pipeline {
                 sh '''
                     npm install -g serve
                     node_modules/.bin/serve -s build &
-                    sleep 5
-                    npx playwright test
+                    until curl --output /dev/null --silent --head --fail http://localhost:3000; do
+                        echo 'Waiting for server...'
+                        sleep 5
+                    done
+                    npx playwright test --reporter=html
                 '''
             }
         } 
