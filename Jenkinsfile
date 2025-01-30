@@ -23,7 +23,7 @@ pipeline {
         }
         */
 
-        stage('Test') {
+        stage('Tests') {
             parallel {
                 stage('Uni-Test') {
                     agent {
@@ -58,16 +58,19 @@ pipeline {
                             npm install -g serve
                             node_modules/.bin/serve -s build -l 3000 &  # Start server in background
                             SERVER_PID=$!  # Capture process ID
+                            trap 'kill $SERVER_PID' EXIT
 
-                            until curl --output /dev/null --silent --head --fail http://localhost:3000; do
+                            # Wait until the server is accessible
+                            for i in {1..10}; do
+                                curl --output /dev/null --silent --head --fail http://localhost:3000 && break
                                 echo 'Waiting for server...'
-                                sleep 5
+                                sleep 2
                             done
 
+                            echo 'Running Playwright tests...
                             npx playwright test --reporter=html  # Run Playwright tests
 
-                            kill $SERVER_PID  # Stop server after tests complete
-                        '''
+                            echo 'E2E tests completed successfully.'                        '''
                     }
                     post {
                         always {
