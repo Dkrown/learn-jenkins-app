@@ -55,9 +55,13 @@ pipeline {
                     steps {
                         echo 'E2E Playwright test starting...'
                         sh '''
-                            npm install -g serve
-                            node_modules/.bin/serve -s build -l 3000 &  # Start server in background
+                            echo 'Installing serve locally...'
+                            npm install serve
+                            npx serve -s build -l 3000 &  # Start server in background
+                            
                             SERVER_PID=$!  # Capture process ID
+                            
+                            # Ensure the server process is alwasy killed when the script exits
                             trap 'kill $SERVER_PID' EXIT
 
                             # Wait until the server is accessible
