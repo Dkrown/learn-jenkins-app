@@ -58,7 +58,7 @@ pipeline {
                             npm install -g serve
                             node_modules/.bin/serve -s build -l 3000 &  # Start server in background
                             SERVER_PID=$!  # Capture process ID
-                            
+                            trap 'kill $SERVER_PID' EXIT
 
                             # Wait until the server is accessible
                             for i in {1..10}; do
