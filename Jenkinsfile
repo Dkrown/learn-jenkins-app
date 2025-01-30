@@ -22,51 +22,61 @@ pipeline {
             }
         }
         */
+
         stage('Test') {
-            agent {
-                docker {
-                    image "${DOCKER_IMAGE}"
-                    reuseNode true
+            parallel {
+                stage('Uni-Test') {
+                    agent {
+                        docker {
+                            image "${DOCKER_IMAGE}"
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        sh '''
+                            echo "Running unit tests..."
+                            npm test
+                        '''
+                    }
+                    post {
+                        always {
+                            junit 'test-results/junit.xml' // Publish the JUnit report
+                        }
+                    }
                 }
-            }
-            steps {
-                sh '''
-                    echo "Running tests..."
-                    npm test
-                '''
-            }
-            post {
-                always {
-                    junit 'test-results/junit.xml' // Publish the JUnit report
+            
+                stage('E2E'){
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            reuseNode true
+                        }
+                    }
+                    steps {
+                        echo 'E2E Playwright test starting...'
+                        sh '''
+                            npm install -g serve
+                            node_modules/.bin/serve -s build -l 3000 &  # Start server in background
+                            SERVER_PID=$!  # Capture process ID
+
+                            until curl --output /dev/null --silent --head --fail http://localhost:3000; do
+                                echo 'Waiting for server...'
+                                sleep 5
+                            done
+
+                            npx playwright test --reporter=html  # Run Playwright tests
+
+                            kill $SERVER_PID  # Stop server after tests complete
+                        '''
+                    }
+                    post {
+                        always {
+                            junit 'test-results/junit.xml' // Publish the JUnit report
+                        }
+                    }
                 }
-            }
+             }
         }
-        
-        stage('E2E'){
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                    reuseNode true
-                }
-            }
-            steps {
-                echo 'E2E playwright test starting...'
-                sh '''
-                    npm install -g serve
-                    node_modules/.bin/serve -s build &
-                    until curl --output /dev/null --silent --head --fail http://localhost:3000; do
-                        echo 'Waiting for server...'
-                        sleep 5
-                    done
-                    npx playwright test --reporter=html
-                '''
-            }
-            post {
-                always {
-                    junit 'test-results/junit.xml' // Publish the JUnit report
-                }
-            }
-        } 
     }
 
     post {
