@@ -65,11 +65,11 @@ pipeline {
                             # trap 'kill $SERVER_PID' EXIT
 
                             # Wait until the server is accessible
-                            for i in {1..10}; do
-                                curl --output /dev/null --silent --head --fail http://localhost:3000 && break
-                                echo 'Waiting for server...'
-                                sleep 2
-                            done
+                            #for i in {1..10}; do
+                            #    curl --output /dev/null --silent --head --fail http://localhost:3000 && break
+                            #    echo 'Waiting for server...'
+                            #    sleep 2
+                            #done
 
                             echo 'Running Playwright tests...
                             npx playwright test --reporter=html  # Run Playwright tests
