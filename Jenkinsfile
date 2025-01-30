@@ -62,7 +62,7 @@ pipeline {
                             SERVER_PID=$!  # Capture process ID
                             
                             # Ensure the server process is alwasy killed when the script exits
-                            trap 'kill $SERVER_PID' EXIT
+                            # trap 'kill $SERVER_PID' EXIT
 
                             # Wait until the server is accessible
                             for i in {1..10}; do
