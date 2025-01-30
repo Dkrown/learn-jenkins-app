@@ -74,7 +74,8 @@ pipeline {
                             echo 'Running Playwright tests...
                             npx playwright test --reporter=html  # Run Playwright tests
 
-                            echo 'E2E tests completed successfully.'                        '''
+                            echo 'E2E tests completed successfully.'
+                         '''
                     }
                     post {
                         always {
