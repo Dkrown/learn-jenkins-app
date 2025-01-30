@@ -59,7 +59,7 @@ pipeline {
                             npm install serve
                             npx serve -s build -l 3000 &  # Start server in background
                             
-                            SERVER_PID=$!  # Capture process ID
+                            #SERVER_PID=$!  # Capture process ID
                             
                             # Ensure the server process is alwasy killed when the script exits
                             # trap 'kill $SERVER_PID' EXIT
