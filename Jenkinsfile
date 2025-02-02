@@ -32,8 +32,8 @@ pipeline {
             steps {
                 sh '''
                     echo "Deploying project..."
-                    npm install netify-cli
-                    node_modules/.bin/netify --version
+                    npm install netlify-cli
+                    node_modules/.bin/netlify --version
                 '''
             }
         }
