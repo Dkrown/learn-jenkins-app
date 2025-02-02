@@ -7,7 +7,7 @@ pipeline {
     }
     
     stages {
-        stage('Build') {
+    /*    stage('Build') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
@@ -37,7 +37,26 @@ pipeline {
                     node_modules/.bin/netlify --version
                 '''
             }
-        }
+        }*/
+        stage('Build and Deploy') {
+            agent {
+                docker {
+                    image "${DOCKER_IMAGE}"
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    echo "Building project..."
+                    npm ci || { echo "npm ci failed"; exit 1; }
+                    npm run build || { echo "npm run build failed"; exit 1; }
+
+                    echo "Deploying project... Site ID: $NETLIFY_SITE_ID"
+                    npm install netlify-cli || { echo "npm install netlify-cli failed"; exit 1; }
+                    node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
+                '''
+            }
+        }        
     }
 
     post {
