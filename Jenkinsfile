@@ -56,6 +56,8 @@ pipeline {
                     npm install netlify-cli || { echo "npm install netlify-cli failed"; exit 1; }
                     node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
                     node_modules/.bin/netlify status
+                    node_modules/.bin/netlify deploy --dir=build --prod
+                
                 '''
             }
         }        
