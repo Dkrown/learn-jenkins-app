@@ -87,6 +87,23 @@ pipeline {
         }
     }
 
+    stages {
+        stage('Deploy') {
+            agent {
+                docker {
+                    image "${DOCKER_IMAGE}"
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    echo "Deploying project..."
+                    npm install netify-cli
+                    node_module/.bin/netify --version
+                '''
+            }
+        }
+
     post {
         always {
             echo 'Pipeline completed.'
