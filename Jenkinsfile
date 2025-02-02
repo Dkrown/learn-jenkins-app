@@ -21,7 +21,7 @@ pipeline {
                 '''
             }
         }
-        */
+        
 
         stage('Tests') {
             parallel {
@@ -84,10 +84,8 @@ pipeline {
                     }
                 }
              }
-        }
-    }
+        }*/
 
-    stages {
         stage('Deploy') {
             agent {
                 docker {
@@ -99,10 +97,11 @@ pipeline {
                 sh '''
                     echo "Deploying project..."
                     npm install netify-cli
-                    node_module/.bin/netify --version
+                    node_modules/.bin/netify --version
                 '''
             }
         }
+    }
 
     post {
         always {
