@@ -39,7 +39,7 @@ pipeline {
                 '''
             }
         }*/
-        stage('Build and Deploy') {
+        stage('Build and Deploy Test') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
