@@ -5,6 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'node:18-alpine'
         NETLIFY_SITE_ID = 'e029ffdd-dd03-4484-985a-8802dedc8813'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
     }
     
     stages {
@@ -57,10 +58,13 @@ pipeline {
                     node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
-                    node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json
-                
+                    node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json                
                 '''
+                script {
+                    env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
+                }
             }
+            
         }
 
         stage('Approval') {
