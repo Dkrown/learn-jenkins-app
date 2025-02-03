@@ -62,7 +62,7 @@ pipeline {
             }
         }
 
-        Stage('Approla') {
+        stage('Approla') {
             step {
                 input message: 'Caution, deploy to production?', ok: 'Yes, proceed to production.'
             }
