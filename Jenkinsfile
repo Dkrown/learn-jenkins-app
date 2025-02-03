@@ -53,10 +53,11 @@ pipeline {
                     npm run build || { echo "npm run build failed"; exit 1; }
 
                     echo "Deploying to staging... Site ID: $NETLIFY_SITE_ID"
-                    npm install netlify-cli || { echo "npm install netlify-cli failed"; exit 1; }
+                    npm install netlify-cli node-jq || { echo "npm install netlify-cli failed"; exit 1; }
                     node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
                     node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build
+                    node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
+                    node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json
                 
                 '''
             }
@@ -64,7 +65,11 @@ pipeline {
 
         stage('Approval') {
             steps {
-                input message: 'Caution, deploy to production?', ok: 'Yes, proceed to production.'
+                timeout(time: 15, unit: 'MINUTES') {
+                    input message: 'Caution, deploy to production?', ok: 'Yes, proceed to production.'
+                    
+                    }
+                
             }
         }
 
