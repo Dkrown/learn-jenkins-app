@@ -39,7 +39,7 @@ pipeline {
                 '''
             }
         }*/
-        stage('Build and Deploy Test') {
+        stage('Deploy staging!') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
@@ -48,11 +48,34 @@ pipeline {
             }
             steps {
                 sh '''
-                    echo "Building project..."
+                    echo "Building staging project..."
                     npm ci || { echo "npm ci failed"; exit 1; }
                     npm run build || { echo "npm run build failed"; exit 1; }
 
-                    echo "Deploying project... Site ID: $NETLIFY_SITE_ID"
+                    echo "Deploying to staging... Site ID: $NETLIFY_SITE_ID"
+                    npm install netlify-cli || { echo "npm install netlify-cli failed"; exit 1; }
+                    node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
+                    node_modules/.bin/netlify status
+                    node_modules/.bin/netlify deploy --dir=build
+                
+                '''
+            }
+        }
+
+        stage('Deploy production.') {
+            agent {
+                docker {
+                    image "${DOCKER_IMAGE}"
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    echo "Building production project..."
+                    npm ci || { echo "npm ci failed"; exit 1; }
+                    npm run build || { echo "npm run build failed"; exit 1; }
+
+                    echo "Deploying to production... Site ID: $NETLIFY_SITE_ID"
                     npm install netlify-cli || { echo "npm install netlify-cli failed"; exit 1; }
                     node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
                     node_modules/.bin/netlify status
@@ -60,7 +83,7 @@ pipeline {
                 
                 '''
             }
-        }        
+        } 
     }
 
     post {
