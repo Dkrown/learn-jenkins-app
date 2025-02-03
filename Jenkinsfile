@@ -62,6 +62,12 @@ pipeline {
             }
         }
 
+        Stage('Approla') {
+            step {
+                input message: 'Caution, deploy to production?', ok: 'Yes, proceed to production.'
+            }
+        }
+
         stage('Deploy production.') {
             agent {
                 docker {
