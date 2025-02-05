@@ -25,7 +25,7 @@ pipeline {
             }
         }
 
-/*        stage('Deploy') {
+        /*stage('Deploy') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
@@ -99,8 +99,8 @@ pipeline {
                 
                 '''
             }
-        } 
-    }*/
+        } */
+    }
 
     post {
         always {
