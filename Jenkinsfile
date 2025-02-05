@@ -9,7 +9,7 @@ pipeline {
     }
     
     stages {
-    /*    stage('Build') {
+        stage('Build') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
@@ -39,8 +39,9 @@ pipeline {
                     node_modules/.bin/netlify --version
                 '''
             }
-        }*/
-        stage('Deploy staging!') {
+        }
+
+/*        stage('Deploy staging!') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
@@ -99,7 +100,7 @@ pipeline {
                 '''
             }
         } 
-    }
+    }*/
 
     post {
         always {
