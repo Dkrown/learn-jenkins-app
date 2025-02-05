@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'node:18-alpine'
-        NETLIFY_SITE_ID = 'e029ffdd-dd03-4484-985a-8802dedc8813'
+        /*NETLIFY_SITE_ID = 'e029ffdd-dd03-4484-985a-8802dedc8813'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-        CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
+        CI_ENVIRONMENT_URL = "${env.STAGING_URL}"*/
     }
     
     stages {
@@ -25,7 +25,7 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+/*        stage('Deploy') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
@@ -41,7 +41,7 @@ pipeline {
             }
         }
 
-/*        stage('Deploy staging!') {
+        stage('Deploy staging!') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
