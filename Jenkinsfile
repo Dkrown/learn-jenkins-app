@@ -37,7 +37,9 @@ pipeline {
                         sh '''
                             npm install serve
                             node_modules/.bin/serve -s build
+                            npx playwright --version
                             npx playwright test
+                            npx playwright show-report
                         '''
                     }
                 }
