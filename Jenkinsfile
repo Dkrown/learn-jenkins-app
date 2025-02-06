@@ -37,6 +37,8 @@ pipeline {
                         sh '''
                             npm install serve
                             node_modules/.bin/serve -s build &
+                            SERVER_PID=$!
+                            trap "kill $SERVER_PID; pkill -f 'serve -s build'" EXIT
                             sleep 10
                             npx playwright test --reporter=html
                             npx playwright --version
