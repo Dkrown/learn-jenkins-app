@@ -3,13 +3,13 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'node:18-alpine'
-        /*NETLIFY_SITE_ID = 'e029ffdd-dd03-4484-985a-8802dedc8813'
+        NETLIFY_SITE_ID = 'e029ffdd-dd03-4484-985a-8802dedc8813'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-        CI_ENVIRONMENT_URL = "${env.STAGING_URL}"*/
+        CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
     }
     
     stages {
-        stage('Build') {
+        /*stage('Build') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
@@ -28,7 +28,6 @@ pipeline {
         stage('E2E') {
                     agent {
                         docker {
-                            /*image 'mcr.microsoft.com/playerwright:v1.39.0-jammy'*/
                             image 'mcr.microsoft.com/playwright:v1.50.0-noble'
                             reuseNode true
                         }
@@ -36,20 +35,16 @@ pipeline {
                     steps {
                         sh '''
                             npm install serve
-                            nohup node_modules/.bin/serve -s build > serve.log 2>1& &
-                            SERVER_PID=$!
-                            trap "kill $SERVER_PID; pkill -f 'serve -s build'" EXIT
+                            node_modules/.bin/serve -s build &
                             sleep 10
                             npx playwright test --reporter=html
                             npx playwright --version
                             npx playwright show-report
-                            pkill -f 'serve -s build' || echo "No serve process found"
-                            kill -9 $SERVER_PID || echo "Process $SERVER_PID already terminated"
                         '''
                     }
-                }
+                } */
 
-        /*stage('Deploy') {
+        stage('Deploy') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
@@ -123,7 +118,7 @@ pipeline {
                 
                 '''
             }
-        } */
+        }
     }
 
     post {
