@@ -46,7 +46,7 @@ pipeline {
                             npx playwright --version
                             
 
-                            kill SERVER_PID
+                            kill $SERVER_PID
                         '''
                     }
                 }
