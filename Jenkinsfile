@@ -42,7 +42,7 @@ pipeline {
 
                             sleep 10
                             npx playwright install
-                            
+                            npx playwright test --reporter=html
                             npx playwright --version
                             npx playwright show-report
 
