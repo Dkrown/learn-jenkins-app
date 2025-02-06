@@ -9,7 +9,7 @@ pipeline {
     }
     
     stages {
-        /*stage('Build') {
+        stage('Build') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
@@ -23,7 +23,7 @@ pipeline {
                     npm run build
                 '''
             }
-        } */
+        }
 
         stage('E2E') {
                     agent {
