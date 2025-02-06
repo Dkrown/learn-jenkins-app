@@ -44,7 +44,7 @@ pipeline {
                             npx playwright install
                             
                             npx playwright --version
-                            
+                            npx playwright show-report
 
                             kill $SERVER_PID
                         '''
