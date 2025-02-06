@@ -35,7 +35,7 @@ pipeline {
                     steps {
                         sh '''
                             npm ci
-                            npx playwright install --with-deps --no-root
+                            npx playwright install
                             npx playwright test --reporter=html
                             npx playwright --version
                             npx playwright show-report
