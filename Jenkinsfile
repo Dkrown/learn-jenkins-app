@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'node:18-alpine'
-        NETLIFY_SITE_ID = 'e029ffdd-dd03-4484-985a-8802dedc8813'
+        /*NETLIFY_SITE_ID = 'e029ffdd-dd03-4484-985a-8802dedc8813'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-        CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
+        CI_ENVIRONMENT_URL = "${env.STAGING_URL}" */
     }
     
     stages {
@@ -23,7 +23,7 @@ pipeline {
                     npm run build
                 '''
             }
-        }
+        } */
 
         stage('E2E') {
                     agent {
@@ -42,9 +42,9 @@ pipeline {
                             npx playwright show-report
                         '''
                     }
-                } */
+                }
 
-        stage('Deploy') {
+        /*stage('Deploy') {
             agent {
                 docker {
                     image "${DOCKER_IMAGE}"
@@ -118,7 +118,7 @@ pipeline {
                 
                 '''
             }
-        }
+        }*/
     }
 
     post {
