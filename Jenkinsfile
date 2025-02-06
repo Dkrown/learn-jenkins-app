@@ -36,13 +36,15 @@ pipeline {
                     steps {
                         sh '''
                             npm install serve
-                            node_modules/.bin/serve -s build &
+                            nohup node_modules/.bin/serve -s build > serve.log 2>1& &
                             SERVER_PID=$!
                             trap "kill $SERVER_PID; pkill -f 'serve -s build'" EXIT
                             sleep 10
                             npx playwright test --reporter=html
                             npx playwright --version
                             npx playwright show-report
+                            pkill -f 'serve -s build' || echo "No serve process found"
+                            kill -9 $SERVER_PID || echo "Process $SERVER_PID already terminated"
                         '''
                     }
                 }
