@@ -38,7 +38,7 @@ pipeline {
                             npm install serve
                             node_modules/.bin/serve -s build &
 
-                            # SERVER_PID=$!
+                            SERVER_PID=$!
 
                             sleep 10
                             npx playwright install
@@ -46,7 +46,7 @@ pipeline {
                             npx playwright --version
                             npx playwright show-report
 
-                            # kill $SERVER_PID
+                            kill $SERVER_PID
                         '''
                     }
                 }
