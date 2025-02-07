@@ -52,6 +52,7 @@ pipeline {
                             npm run build || { echo "npm run build failed"; exit 1; }
 
                             echo "Deploying to production... Site ID: $NETLIFY_SITE_ID"
+                            npm install node-jq --save-dev || { echo "npm install node-jq failed"; exit 1; }
                             npm install netlify-cli || { echo "npm install netlify-cli failed"; exit 1; }
                             node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
                             node_modules/.bin/netlify status
@@ -60,7 +61,7 @@ pipeline {
                             node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json
 
                             # npx playwright test --reporter=html
-                            # npx playwright --version
+                            npx playwright --version
                         '''
                     }
                 }
