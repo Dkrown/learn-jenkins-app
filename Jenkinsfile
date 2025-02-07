@@ -9,48 +9,6 @@ pipeline {
     }
     
     stages {
-        /*stage('Build') {
-            agent {
-                docker {
-                    image "${DOCKER_IMAGE}"
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    echo "Building project..."
-                    npm ci
-                    npm run build
-                '''
-            }
-        }
-
-        stage('E2E') {
-                    agent {
-                        docker {
-                            image 'mcr.microsoft.com/playwright:v1.50.1-noble'
-                            reuseNode true
-                        }
-                    }
-                    steps {
-                        sh '''
-                            npm ci
-                            npm install serve
-                            node_modules/.bin/serve -s build &
-
-                            SERVER_PID=$!
-
-                            sleep 10
-                            npx playwright install
-                            npx playwright test --reporter=html
-                            npx playwright --version
-                            npx playwright show-report
-
-                            kill $SERVER_PID
-                        '''
-                    }
-                }*/
-
         stage('Deploy') {
             agent {
                 docker {
@@ -126,6 +84,51 @@ pipeline {
                 '''
             }
         }
+        
+        stage('Build') {
+            agent {
+                docker {
+                    image "${DOCKER_IMAGE}"
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    echo "Building project..."
+                    npm ci
+                    npm run build
+                '''
+            }
+        }
+
+        stage('E2E') {
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.50.1-noble'
+                            reuseNode true
+                        }
+                    }
+                    environment {
+                        CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
+                    }
+                    steps {
+                        sh '''
+                            npm ci
+                            npm install serve
+                            node_modules/.bin/serve -s build &
+
+                            SERVER_PID=$!
+
+                            sleep 10
+                            npx playwright install
+                            npx playwright test --reporter=html
+                            npx playwright --version
+                            npx playwright show-report
+
+                            kill $SERVER_PID
+                        '''
+                    }
+                }
     }
 
     post {
