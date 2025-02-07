@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'node:18-alpine'
         NETLIFY_SITE_ID = 'e029ffdd-dd03-4484-985a-8802dedc8813'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-        CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
+        // CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
     }
     
     stages {
@@ -23,33 +23,6 @@ pipeline {
                     node_modules/.bin/netlify --version
                 '''
             }
-        }
-
-        stage('Deploy staging!') {
-            agent {
-                docker {
-                    image "${DOCKER_IMAGE}"
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    echo "Building staging project..."
-                    npm ci || { echo "npm ci failed"; exit 1; }
-                    npm run build || { echo "npm run build failed"; exit 1; }
-
-                    echo "Deploying to staging... Site ID: $NETLIFY_SITE_ID"
-                    npm install netlify-cli node-jq || { echo "npm install netlify-cli failed"; exit 1; }
-                    node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
-                    node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json                
-                '''
-                script {
-                    env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
-                }
-            }
-            
         }
 
         stage('Approval') {
@@ -70,7 +43,7 @@ pipeline {
                         }
                     }
                     environment {
-                        CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
+                        CI_ENVIRONMENT_URL = 'STAGING-TO-BE-SET'
                     }
                     steps {
                         sh '''
@@ -83,6 +56,8 @@ pipeline {
                             node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
                             node_modules/.bin/netlify status
                             node_modules/.bin/netlify deploy --dir=build --prod
+                            CI_ENVIRONMENT_URL=$(node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json)
+                            node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json
 
                             npx playwright test --reporter=html
                             npx playwright --version
