@@ -63,45 +63,6 @@ pipeline {
         }
 
         stage('Deploy production.') {
-            agent {
-                docker {
-                    image "${DOCKER_IMAGE}"
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    echo "Building production project..."
-                    npm ci || { echo "npm ci failed"; exit 1; }
-                    npm run build || { echo "npm run build failed"; exit 1; }
-
-                    echo "Deploying to production... Site ID: $NETLIFY_SITE_ID"
-                    npm install netlify-cli || { echo "npm install netlify-cli failed"; exit 1; }
-                    node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --prod
-                
-                '''
-            }
-        }
-        
-        stage('Build') {
-            agent {
-                docker {
-                    image "${DOCKER_IMAGE}"
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    echo "Building project..."
-                    npm ci
-                    npm run build
-                '''
-            }
-        }
-
-        stage('E2E') {
                     agent {
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.50.1-noble'
@@ -113,19 +74,18 @@ pipeline {
                     }
                     steps {
                         sh '''
-                            npm ci
-                            npm install serve
-                            node_modules/.bin/serve -s build &
+                            echo "Building production project..."
+                            npm ci || { echo "npm ci failed"; exit 1; }
+                            npm run build || { echo "npm run build failed"; exit 1; }
 
-                            SERVER_PID=$!
+                            echo "Deploying to production... Site ID: $NETLIFY_SITE_ID"
+                            npm install netlify-cli || { echo "npm install netlify-cli failed"; exit 1; }
+                            node_modules/.bin/netlify --version || { echo "netlify-cli check failed"; exit 1; }
+                            node_modules/.bin/netlify status
+                            node_modules/.bin/netlify deploy --dir=build --prod
 
-                            sleep 10
-                            npx playwright install
                             npx playwright test --reporter=html
                             npx playwright --version
-                            npx playwright show-report
-
-                            kill $SERVER_PID
                         '''
                     }
                 }
