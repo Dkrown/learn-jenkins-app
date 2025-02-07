@@ -60,7 +60,7 @@ pipeline {
                             CI_ENVIRONMENT_URL=$(node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json)
                             node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json
 
-                            npx playwright test #--reporter=html
+                            npx playwright test
                             npx playwright --version
                         '''
                     }
