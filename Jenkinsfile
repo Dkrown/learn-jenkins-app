@@ -7,6 +7,14 @@ pipeline {
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
         // CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
     }
+
+    stages {
+        stage('Docker') {
+            steps {
+                sh 'docker build -t my-playwright .'
+            }
+        }
+    }
     
     stages {
         stage('Deploy') {
